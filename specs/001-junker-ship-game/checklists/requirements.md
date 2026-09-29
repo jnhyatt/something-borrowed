@@ -33,6 +33,8 @@
 
 - Revised 2026-09-18 for up-front generated actions and AI-judged consequences, then again to
   remove sub-areas (all areas flat).
+- Revised 2026-09-24: in-game action controls folded into FR-039; presentation requirements
+  renumbered to FR-042 and FR-043. Re-validated; all items pass.
 - OpenRouter and do/set/remove request types are named because the user specified them; they
   describe the game's design rather than its implementation.
 - The AI's game-over judgment is subjective by design (FR-023, FR-025); fairness is checked

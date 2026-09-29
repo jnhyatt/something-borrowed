@@ -14,11 +14,9 @@
 
 ### Session 2026-09-18
 
-- Q: How does the player send an action? → A: Both. In-game controls send the request (and
-  show what it is), and players may also send the same requests by hand with external tools.
 - Q: Is finding the right part of the ship part of the challenge? → A: Yes. The scenario gives
   only in-story symptoms; the player must work out which action, in which area, fixes it.
-  *(Revised: symptoms have no location of their own; only actions do.)*
+  _(Revised: symptoms have no location of their own; only actions do.)_
 - Feedback: If AI generation fails, v1 shows a simple error message (e.g., "Can't get a
   response from OpenRouter, try again later"). No pre-written fallback scenarios.
 - Feedback: Players sign in. Game progress is saved to the player's account, and each
@@ -44,7 +42,7 @@
 - Feedback: No sub-areas. All ship areas are flat (e.g., no maintenance hatch inside the engine
   room); nesting adds complexity for little payoff.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Survive one ship malfunction (Priority: P1)
 
@@ -155,8 +153,8 @@ text shown, is tied to their account, so they can leave mid-trip and come back l
 same or another device, and continue exactly where they stopped. Each player has at most one
 game at a time.
 
-**Why this priority**: Needed for saved progress and for identifying who sent an action, but the
-game loop can be demonstrated with a single test account.
+**Why this priority**: Needed for saved progress, but the game loop can be demonstrated with a
+single test account.
 
 **Independent Test**: Sign in, start a game, take a wrong action and then resolve one scenario,
 sign out, sign back in (optionally on another browser), and confirm the game resumes on leg 2
@@ -192,7 +190,7 @@ with the same log text as before.
 - **Player tries every action**: each action can be tried once per scenario, and the correct
   action is always among them, so a player who survives long enough will always find it.
 - **Player tries an action already tried in this scenario** (double-submit, back button,
-  refreshing after acting, resending by hand): no new attempt is recorded; the existing result
+  refreshing after acting): no new attempt is recorded; the existing result
   for that action is shown again.
 - **Request matches no action**: rejected with an error message; game state is unchanged and
   it does not count as an attempt.
@@ -211,7 +209,7 @@ with the same log text as before.
   light-hearted and family-friendly; content that fails this check is treated as a generation
   failure.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -321,23 +319,17 @@ with the same log text as before.
 - **FR-038**: The ship MUST be divided into named areas, each reachable at its own
   human-readable address, including at minimum: piloting, engine room, and life support.
   Areas MUST NOT be nested; every area is at the top level of the ship.
-- **FR-039**: Each area MUST display its actions, links to every other area, the current trip
-  progress, and the active scenario's symptoms.
+- **FR-039**: Each area MUST display its actions, each with an in-game control to take it, links
+  to every other area, the current trip progress, and the active scenario's symptoms.
 - **FR-040**: Every area MUST be reachable through in-game navigation from every other area.
 - **FR-041**: Navigating to an address that is not a ship area MUST show a 404 screen with a link
   back.
 
-**Sending requests**
-
-- **FR-042**: Each area MUST offer in-game controls for its actions.
-- **FR-043**: The game MUST tell signed-in players how to identify themselves on requests sent by
-  hand. Requests without valid player credentials MUST be rejected.
-
 **Presentation**
 
-- **FR-044**: The game MUST be fully playable using only a keyboard, and outcomes (resolved,
+- **FR-042**: The game MUST be fully playable using only a keyboard, and outcomes (resolved,
   continued, game over) and tried actions MUST be communicated with text, not color alone.
-- **FR-045**: The game MUST be fully playable on mobile devices or small screens.
+- **FR-043**: The game MUST be fully playable on mobile devices or small screens.
 
 ### Key Entities
 
@@ -353,7 +345,7 @@ with the same log text as before.
 - **Attempt**: One action taken during a scenario. Records the action, its order in the game,
   the result text shown, and whether it resolved the scenario, continued it, or ended the game.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
@@ -377,8 +369,7 @@ with the same log text as before.
   90% of the time.
 - **SC-010**: 100% of ship areas can be reached both via in-game navigation and by entering their
   address directly.
-- **SC-011**: For every action, sending it by hand and using the in-game control produce the same
-  result, and 100% of previously shown result text is identical after a reload or device switch.
+- **SC-011**: 100% of previously shown result text is identical after a reload or device switch.
 
 ## Assumptions
 
@@ -394,7 +385,7 @@ with the same log text as before.
 - Hints are given only through wrong-action results; there is no separate hint feature.
 - Repeating an action within a scenario is out of scope for v1 and may be added later.
 - A scenario's correct action may be one that was tried (wrongly) in an earlier leg.
-- Results of requests sent by hand appear in the game on the next page load; live updating of
+- Actions taken in one tab or device appear in others on their next page load; live updating of
   already-open screens is not required.
 - English only; desktop and mobile browsers are both supported.
 - Depends on an external AI text-generation service (OpenRouter, as specified). There is no
