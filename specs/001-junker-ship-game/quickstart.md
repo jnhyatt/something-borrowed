@@ -6,20 +6,31 @@ How to run the feature locally and check that it meets the spec. Data shapes are
 
 ## Prerequisites
 
-- Node.js 22, Docker (for Postgres)
+- Node.js 26 and npm
+- Postgres 17 with `something_borrowed` (dev) and `something_borrowed_test` databases on
+  `localhost:5432`. `docker-compose.yml` provides this under Docker or rootless Podman.
 - An OpenRouter API key and a model that supports structured outputs (only for real play; tests
   use the fake provider)
 
 ## Setup
 
 ```sh
-docker compose up -d                 # postgres:17 with dev + test databases
+docker compose up -d                 # or `podman compose up -d`; postgres:17 with dev + test databases
 cp .env.example .env.local           # fill DATABASE_URL, BETTER_AUTH_SECRET, OPENROUTER_API_KEY, OPENROUTER_MODEL
 npm install
 npx playwright install chromium
 npm run db:migrate                   # drizzle-kit migrate
 npm run dev
 ```
+
+If Postgres already runs another way, such as a Podman quadlet that mirrors `docker-compose.yml`,
+skip the first step. The compose service and the quadlet share the container name
+`something-borrowed-db` and the volume `something-borrowed-pgdata`, so running both at once fails
+with "name already in use" instead of starting a second database. The init script in `db-init/`
+runs only when the volume is first created.
+
+On Arch, `npx playwright install chromium` warns that the OS isn't officially supported and
+downloads the Ubuntu build, which works. Don't use `--with-deps`, which needs `apt`.
 
 To play without OpenRouter, set `AI_PROVIDER=fake` in `.env.local`.
 

@@ -1,0 +1,25 @@
+# Local Postgres with dev (something_borrowed) and test (something_borrowed_test) databases.
+# Keep in sync with the quadlet at ~/.config/containers/systemd/something-borrowed-db.container
+# if you run Postgres that way instead.
+services:
+  db:
+    image: docker.io/library/postgres:17
+    container_name: something-borrowed-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: something_borrowed
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    name: something-borrowed-pgdata
