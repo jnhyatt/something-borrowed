@@ -16,8 +16,9 @@ test("ship pages are gated; sign up, sign out and sign back in", async ({
   await page.getByRole("button", { name: "Sign up" }).click();
 
   await expect(page).toHaveURL("/piloting");
+  // A brand-new player has no game yet, so the ship offers one.
   await expect(
-    page.getByRole("heading", { level: 1, name: "Piloting" }),
+    page.getByRole("button", { name: "Borrow the junker" }),
   ).toBeVisible();
 
   await page.getByRole("button", { name: "Sign out" }).click();

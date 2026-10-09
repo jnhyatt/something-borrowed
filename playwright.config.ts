@@ -30,6 +30,7 @@ export default defineConfig({
       DATABASE_URL: TEST_DATABASE_URL,
       BETTER_AUTH_URL: baseURL,
       BETTER_AUTH_SECRET: "e2e-only-secret-not-for-real-use-0123456789",
+      AI_PROVIDER: "fake",
     },
   },
 });

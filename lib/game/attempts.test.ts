@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { applyResult, decideAttempt, type NewAttempt } from "./attempts";
+import {
+  applyResult,
+  decideAttempt,
+  nextLeg,
+  type NewAttempt,
+} from "./attempts";
 import {
   actionId,
   buildAttempt,
@@ -212,5 +217,29 @@ describe("applyResult", () => {
       resolvesScenario: false,
       gameStatus: "lost",
     });
+  });
+});
+
+describe("nextLeg", () => {
+  it("is the following leg once the latest one is resolved", () => {
+    const record = buildGameRecord({
+      scenarios: [buildScenario({ leg: 1, isResolved: true })],
+    });
+    expect(nextLeg(record)).toBe(2);
+  });
+
+  it("is undefined while a scenario is active, after leg 3, or once the game is over", () => {
+    expect(nextLeg(buildGameRecord())).toBeUndefined();
+    expect(nextLeg(recordOnLeg(3))).toBeUndefined();
+    expect(
+      nextLeg(
+        buildGameRecord({
+          game: { status: "won", endedAt: new Date() },
+          scenarios: ([1, 2, 3] satisfies Leg[]).map((leg) =>
+            buildScenario({ leg, isResolved: true }),
+          ),
+        }),
+      ),
+    ).toBeUndefined();
   });
 });
