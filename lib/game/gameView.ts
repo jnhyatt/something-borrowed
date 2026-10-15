@@ -1,5 +1,5 @@
-import { AREAS } from "./areas";
 import { findActiveScenario } from "./attempts";
+import { compareActions } from "./generation";
 import type {
   ActionView,
   AttemptOutcome,
@@ -12,7 +12,7 @@ import type {
 
 export const BUSY_CLAIM_TIMEOUT_MS = 60_000;
 
-const VIEW_OUTCOME: Record<AttemptOutcome, AttemptView["outcome"]> = {
+export const VIEW_OUTCOME: Record<AttemptOutcome, AttemptView["outcome"]> = {
   resolved: "resolved",
   continued: "continued",
   game_over: "game-over",
@@ -26,9 +26,13 @@ const ENDED_STATUS: Record<
   lost: "lost",
 };
 
-const AREA_ORDER = new Map<string, number>(
-  AREAS.map((area, index) => [area.slug, index]),
-);
+/** Whether a busy claim (`games.busy_since`) is still held, rather than stale. */
+export function isClaimLive(busySince: Date | null, now: Date): boolean {
+  return (
+    busySince !== null &&
+    now.getTime() - busySince.getTime() <= BUSY_CLAIM_TIMEOUT_MS
+  );
+}
 
 function latestScenario(scenarios: Scenario[]): Scenario {
   const latest = scenarios.reduce<Scenario | undefined>(
@@ -68,11 +72,7 @@ export function toGameView(record: GameRecord | null, now: Date): GameView {
   );
 
   const actionViews: ActionView[] = [...actions]
-    .sort(
-      (a, b) =>
-        (AREA_ORDER.get(a.area) ?? 0) - (AREA_ORDER.get(b.area) ?? 0) ||
-        a.position - b.position,
-    )
+    .sort(compareActions)
     .map((action) => ({
       id: action.id,
       label: action.label,
@@ -106,16 +106,12 @@ export function toGameView(record: GameRecord | null, now: Date): GameView {
       ];
     });
 
-  const isEvaluating =
-    game.busySince !== null &&
-    now.getTime() - game.busySince.getTime() <= BUSY_CLAIM_TIMEOUT_MS;
-
   return {
     status,
     leg: shown.leg,
     symptoms: shown.symptoms,
     actions: actionViews,
     attempts: attemptViews,
-    isEvaluating,
+    isEvaluating: isClaimLive(game.busySince, now),
   };
 }

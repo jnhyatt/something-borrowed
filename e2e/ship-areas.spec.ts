@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { signUp } from "./helpers";
+import { signUp, startGame } from "./helpers";
 
 const AREAS = [
   { path: "/piloting", name: "Piloting" },
@@ -9,6 +9,7 @@ const AREAS = [
 
 test.beforeEach(async ({ page }) => {
   await signUp(page);
+  await startGame(page);
 });
 
 test("clicks through every area with the area nav", async ({ page }) => {
@@ -34,7 +35,12 @@ for (const area of AREAS) {
     await expect(
       page.getByRole("heading", { level: 1, name: area.name }),
     ).toBeVisible();
-    await expect(page.getByText("All systems nominal")).toBeVisible();
+    await expect(
+      page.getByRole("region", { name: "Diagnostics" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("list", { name: "Actions" }).getByRole("listitem"),
+    ).toHaveCount(4);
 
     const nav = page.getByRole("navigation", { name: "Ship areas" });
     for (const other of AREAS) {

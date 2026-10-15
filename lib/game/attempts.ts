@@ -38,6 +38,19 @@ export function findActiveScenario(record: GameRecord): Scenario | undefined {
   return record.scenarios.find((scenario) => scenario.resolvedAt === null);
 }
 
+/**
+ * The leg to generate next, when the game is between legs: in progress, no active scenario,
+ * and the latest leg isn't the last. Otherwise undefined.
+ */
+export function nextLeg(record: GameRecord): Leg | undefined {
+  if (record.game.status !== "in_progress") return undefined;
+  if (findActiveScenario(record) !== undefined) return undefined;
+  const latest = Math.max(0, ...record.scenarios.map((s) => s.leg));
+  if (latest === 1) return 2;
+  if (latest === 2) return 3;
+  return undefined;
+}
+
 export function decideAttempt(
   record: GameRecord,
   actionId: unknown,
