@@ -5,7 +5,6 @@ const envSchema = z.object({
   DATABASE_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().min(32),
   BETTER_AUTH_URL: z.url(),
-  // `fake` is for tests and offline play; lib/ai refuses it in production.
   AI_PROVIDER: z.enum(["openrouter", "fake"]).default("openrouter"),
 });
 
